@@ -17,19 +17,23 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    - name: Use Node.js 16.x
-      uses: actions/setup-node@v3
-      with:
-        node-version: 16.x
-        cache: 'npm'
-    - run: npm ci
-    - run: npm run build --if-present
-    - run: npm test
+    - name: Use Dockerfile.dev to build image
+    - run: docker build -t depeacock/node-app -f Dockerfile.dev .
+    - run: docker run -e CI=true depeacock/node-app npm test
 
-    - name: Build and Push Docker Image
-      uses: mr-smithers-excellent/docker-build-push@v5
-      with:
-        image: dupeacock/node-app
-        registry: docker.io
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_PASSWORD }}
+    # - name: Use Node.js 16.x
+    #   uses: actions/setup-node@v3
+    #   with:
+    #     node-version: 16.x
+    #     cache: 'npm'
+    # - run: npm ci
+    # - run: npm run build --if-present
+    # - run: npm test
+
+    # - name: Build and Push Docker Image
+    #   uses: mr-smithers-excellent/docker-build-push@v5
+    #   with:
+    #     image: dupeacock/node-app
+    #     registry: docker.io
+    #     username: ${{ secrets.DOCKER_USERNAME }}
+    #     password: ${{ secrets.DOCKER_PASSWORD }}
